@@ -7,7 +7,7 @@ Status: Works OK.
 
 Note:
 Currently configured for SSD1306 128x32 display and I2C #2. 
-If you use SSD1306 128x32 you need to update SSD1306_i2c.h 
+If you use SSD1306 128x64 you need to update SSD1306_i2c.h 
 and set proper I2C address in the function 
   display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
 in the code below.     
