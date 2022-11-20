@@ -7,7 +7,7 @@ Status: Works OK.
 
 Note:
 Currently configured for SSD1306 128x32 display and I2C #2. 
-If you use SSD1306 128x64 you need to update SSD1306_i2c.h 
+If you use SSD1306 128x32 you need to update SSD1306_i2c.h 
 and set proper I2C address in the function 
   display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
 in the code below.     
@@ -15,6 +15,8 @@ in the code below.
 
 Original library is from https://github.com/rogerclarkmelbourne/Arduino_STM32/tree/master/STM32F1/libraries/Adafruit_SSD1306
 Updated by IF 
+2022-11-20
+- minor bugs corrected in  SSD1306_i2c.h to work with Arduino.  Tested the library with Arduino Pro Mini, works OK. Example added here. 
 2022-03-10
 - tested support of hardware I2C for Maple Mini board / STM32 (https://github.com/rogerclarkmelbourne/Arduino_STM32/)
 - simplified to support I2C only and use a pointer to I2C object in order to reduce potential problems with redefining Wire etc 
@@ -84,13 +86,20 @@ static const unsigned char PROGMEM logo16_glcd_bmp[] =
 TwoWire I2C_FAST=TwoWire(2,I2C_FAST_MODE); //I2C #2
 
 //For software interface for STM32 use  #include <Wire_slave.h> 
+//For Arduino ( Arduino Pro Mini ) comment out everything in this section - will use default Wire object instead
+
 //============================================================
 
 
 
 //Setup the SSD1306_i2c with a pointer to the I2C interface
+
+// For STM32:
 SSD1306_i2c display = SSD1306_i2c(&I2C_FAST,LCD_RESET);
 //SSD1306_i2c display = SSD1306_i2c();
+
+//For Arduino ( Arduino Pro Mini ):
+//SSD1306_i2c display = SSD1306_i2c(&Wire,LCD_RESET);  //use default Wire object 
 
 
 void setup()   {                
@@ -234,8 +243,7 @@ void testdrawbitmap(const uint8_t *bitmap, uint8_t w, uint8_t h) {
     icons[f][YPOS] = 0;
     icons[f][DELTAY] = random(5) + 1;
     
-    Serial.print("testdrawbitmap");
-	Serial.print("x: ");
+    Serial.print("x: ");
     Serial.print(icons[f][XPOS], DEC);
     Serial.print(" y: ");
     Serial.print(icons[f][YPOS], DEC);
